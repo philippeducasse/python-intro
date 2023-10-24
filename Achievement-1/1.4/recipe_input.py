@@ -35,7 +35,7 @@ def calc_difficulty(cooking_time, ingredients):
     return difficulty
 
 
-user_file = input("Please enter a file name: ") + ".bin"
+user_file = input("Please enter a file name (without the extention): ") + ".bin"
 
 try:
     user_recipe = open(user_file, "rb")
@@ -53,9 +53,9 @@ except:
 else:
     user_file.close()
 finally:
-    recipes_list = data["recipes_list"]
+    recipes_list.extend(data["recipes_list"])
     print("File contains these recipes: " + str(recipes_list))
-    ingredients_list = data["ingredients_list"]
+    ingredients_list.extend(data["ingredients_list"])
     print("file contains these ingredients: " + str(ingredients_list))
 
 n = int(input("how many recipes would you like to define?"))

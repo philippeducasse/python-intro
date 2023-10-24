@@ -12,17 +12,18 @@ def display_recipe(recipe):
 
 def search_ingredient(data):
     print("Here are all the available ingredients: ")
-    for count, ingredient in enumerate(data["ingredients_list"]):
+    for count, ingredient in enumerate(data["ingredients_list"], 1):
         print(count, ingredient)
     try:
-        ingredient_searched = int(input("Please enter an ingredient number: "))
+        index = int(input("Please enter an ingredient number: ")) - 1
+        ingredient_searched = data["ingredients_list"][index]
     except IndexError:
         print("Icorrect input, try again!")
     except:
         print("Something went wrong, please try again.")
     else:
         for recipe in data["recipes_list"]:
-            if ingredient in recipe["ingredients"]:
+            if ingredient_searched in recipe["ingredients"]:
                 print(recipe)
 
 
