@@ -79,13 +79,13 @@ tea.get_cooking_time()
 tea.add_ingredients("Tea Leaves", "Sugar", "Water")
 tea.set_cooking_time(5)
 tea.get_dificulty()
-print(tea.__str__())
+print(tea)
 
 coffee = Recipe("Coffee")
 coffee.add_ingredients("Coffee Powder", "Sugar", "Water")
 coffee.set_cooking_time(5)
 coffee.get_dificulty()
-print(coffee.__str__())
+print(coffee)
 
 cake = Recipe("Cake")
 cake.add_ingredients(
@@ -93,7 +93,7 @@ cake.add_ingredients(
 )
 cake.set_cooking_time(50)
 cake.get_dificulty()
-print(cake.__str__())
+print(cake)
 
 banana_smoothie = Recipe("Banana Smoothie")
 banana_smoothie.add_ingredients(
@@ -101,7 +101,7 @@ banana_smoothie.add_ingredients(
 )
 banana_smoothie.set_cooking_time(5)
 banana_smoothie.get_dificulty()
-print(banana_smoothie.__str__())
+print(banana_smoothie)
 
 recipes_list = [tea, coffee, cake, banana_smoothie]
 
