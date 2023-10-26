@@ -18,21 +18,20 @@ class Recipe(object):
 
     def set_cooking_time(self, cooking_time):
         self.cooking_time = cooking_time
+        self.calc_difficulty()
 
     def add_ingredients(self, *ingredients):
-        self.ingredients = [ing for ing in ingredients]
-
-        # print("TEST Type: ", self.ingredients)
-        # print("TEST: ", len(self.ingredients))
+        self.ingredients.extend(ingredients)
         self.update_all_ingredients()
+        self.calc_difficulty()
 
     def get_ingredients(self):
         return self.ingredients
 
     def get_dificulty(self):
-        if not self.difficulty:
+        if not self.difficulty is None:
             self.calc_difficulty()
-            return self.difficulty
+        return self.difficulty
 
     def update_all_ingredients(self):
         for ingredient in self.ingredients:
@@ -65,16 +64,14 @@ class Recipe(object):
             self.difficulty = "Hard"
 
     def search_ingredient(self, ingredient):
-        if ingredient in self.ingredients:
-            return True
-        else:
-            return False
+        return ingredient in self.ingredients
 
 
 def recipe_search(data, search_term):
     for recipe in data:
         if recipe.search_ingredient(search_term):
             print("recipe that contain your search term: ", search_term, "\n", recipe)
+            # print(recipe)
 
 
 tea = Recipe("Tea")
