@@ -9,7 +9,7 @@ class Recipe(object):
 
     def get_name(self):
         return self.name
-
+    
     def get_cooking_time(self):
         return self.cooking_time
 
@@ -67,7 +67,7 @@ class Recipe(object):
         return ingredient in self.ingredients
 
 
-def recipe_search(data, search_term):
+def recipe_search(data: list(Recipe), search_term):
     for recipe in data:
         if recipe.search_ingredient(search_term):
             print("recipe that contain your search term: ", search_term, "\n", recipe)
