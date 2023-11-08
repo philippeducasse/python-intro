@@ -26,7 +26,9 @@ def create_recipe(conn, cursor):
     ingredients_list = []
     name = str(input("Enter recipe name: "))
     cooking_time = int(input("Enter cooking time, in minutes: "))
-    ingredients = input("Enter the ingredients: ")
+    ingredients = input(
+        "Ingredients of the recipe (separate them with comma(,) and space ( ): "
+    )
     ingredients_list.append(ingredients)
     ingredients_str = ", ".join(ingredients_list)
     difficulty = calculate_difficulty(cooking_time, ingredients)
@@ -34,7 +36,7 @@ def create_recipe(conn, cursor):
     val = (name, ingredients_str, cooking_time, difficulty)
 
     cursor.execute(sql, val)
-    conn.commit
+    conn.commit()
     print("Recipe saved to the database")
 
 
@@ -84,14 +86,21 @@ def search_recipe(conn, cursor):
     except:
         print("Something went wrong, please try again.")
     else:
-        sql = "SELECT name FROM Recipes WHERE Ingredients LIKE %s"
+        sql = "SELECT * FROM Recipes WHERE Ingredients LIKE %s"
         val = ("%" + ingredient_searched + "%",)
         cursor.execute(sql, val)
         recipe_results = cursor.fetchall()
 
-        for row in recipe_results:
-            for recipe in row:
-                print(recipe)
+    for recipe in recipe_results:
+        print("-------------------------------")
+        print("\nRecipe name:", recipe[1])
+        print("Cooking time (in minutes):", recipe[3])
+        print("Difficulty:", recipe[4])
+        ingredient_list = recipe[2].split(", ")
+        print("Ingredients:")
+        for ingredient in ingredient_list:
+            print("- ", ingredient)
+        print("-------------------------------")
 
 
 def update_recipe(conn, cursor):
@@ -130,7 +139,10 @@ def update_recipe(conn, cursor):
             ),
         )
         update_difficulty(selectedRecipe)
-    print("Updated recipe successfully.")
+        print("Updated recipe successfully.")
+    else:
+        print("Invalid selection")
+
     conn.commit()
 
 
@@ -138,7 +150,6 @@ def update_difficulty(id):
     cursor.execute(f"SELECT * FROM Recipes WHERE id = %s", (id,))
     recipe_to_update = cursor.fetchall()
 
-    name = recipe_to_update[0][1]
     ingredients = tuple(recipe_to_update[0][2].split(","))
     cooking_time = recipe_to_update[0][3]
 
