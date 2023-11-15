@@ -25,7 +25,12 @@ cursor.execute(
 def create_recipe(conn, cursor):
     ingredients_list = []
     name = str(input("Enter recipe name: "))
-    cooking_time = int(input("Enter cooking time, in minutes: "))
+    try:
+        cooking_time = int(input("Enter cooking time, in minutes: "))
+    except ValueError:
+        print("Please enter a valid number")
+        create_recipe(conn, cursor)
+
     ingredients = input(
         "Ingredients of the recipe (separate them with comma(,) and space ( ): "
     )
