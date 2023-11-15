@@ -43,7 +43,8 @@ class Recipe(Base):
         )
 
     def calculate_difficulty(self):
-        ingredients_num = len(self.ingredients.split(", "))
+        ingredients_list = self.ingredients.split(", ")
+        ingredients_num = len(ingredients_list)
         if self.cooking_time < 10 and ingredients_num < 4:
             return "Easy"
         elif self.cooking_time < 10 and ingredients_num >= 4:
@@ -68,11 +69,10 @@ print("Tables created successfully.")
 
 
 def create_recipe():
-    ingredients_list = []
     name = str(input("Enter recipe name: "))
     cooking_time = str(input("Enter cooking time, in minutes: "))
 
-    ingredients = input(
+    ingredients_input = input(
         "Ingredients of the recipe (separate them with comma(,) and space ( ): "
     )
     if len(name) > 50 or not name.isalnum():
@@ -85,7 +85,7 @@ def create_recipe():
         return
 
     recipe_entry = Recipe(
-        name=name, ingredients=ingredients, cooking_time=int(cooking_time)
+        name=name, ingredients=ingredients_input, cooking_time=int(cooking_time)
     )
 
     recipe_entry.difficulty = recipe_entry.calculate_difficulty()
@@ -111,10 +111,14 @@ def search_recipe():
         return None
     else:
         results = session.query(Recipe.ingredients).all()
+        breakpoint()
         all_ingredients = []
-        for ingredient in results:
-            if not ingredient in all_ingredients:
-                ingredient.append(all_ingredients)
+        for ingredients in results:
+            for ingredient_string in ingredients:
+                ingredient_item = ingredient_string.split(", ")
+                for ingredient in ingredient_item:
+                    if not ingredient in all_ingredients:
+                        all_ingredients.append(ingredient)
 
     print("Here are all the available ingredients: \n")
     for index, ingredient in enumerate(all_ingredients, 1):
@@ -205,10 +209,11 @@ def delete_recipe():
     except:
         print("Something went wrong, please try again.")
     else:
-        recipe_to_delete = session.query(Recipe.id.like(recipe_id_input))
+        recipe_to_delete = session.query(Recipe).get(int(recipe_id_input))
         confirmation = input("Are you sure you want to delete this recipe? (y/n): ")
         if confirmation == "y":
             session.delete(recipe_to_delete)
+            session.commit()
             print("Recipe deleted.")
 
 
