@@ -70,19 +70,17 @@ print("Tables created successfully.")
 
 def create_recipe():
     name = str(input("Enter recipe name: "))
-    cooking_time = str(input("Enter cooking time, in minutes: "))
-
-    ingredients_input = input(
-        "Ingredients of the recipe (separate them with comma(,) and space ( ): "
-    )
-    if len(name) > 50 or not name.isalnum():
+    if len(name) > 50 or not name.isalpha():
         print(
             "Invalid recipe name. Please enter an alphanumeric value of less than 50 characters"
         )
         return
+    cooking_time = str(input("Enter cooking time, in minutes: "))
     if not cooking_time.isnumeric():
         print("Please enter a number")
         return
+
+    ingredients_input = input("Ingredients of the recipe (separate them with comma): ")
 
     recipe_entry = Recipe(
         name=name, ingredients=ingredients_input, cooking_time=int(cooking_time)
@@ -101,7 +99,7 @@ def view_all_recipes():
         return None
 
     for recipe in recipes_list:
-        print(recipe.__str__)
+        print(recipe)
 
 
 def search_recipe():
@@ -111,7 +109,6 @@ def search_recipe():
         return None
     else:
         results = session.query(Recipe.ingredients).all()
-        breakpoint()
         all_ingredients = []
         for ingredients in results:
             for ingredient_string in ingredients:
@@ -125,8 +122,12 @@ def search_recipe():
         print(index, ingredient)
 
     selection = input(
-        "Enter ID of ingredient(s) to find available recipes \n If you are entering multiple IDs, separate them with a comma: "
+        "Enter ID of ingredient(s) to find available recipes \nIf you are entering multiple IDs, separate them with a comma: "
     )
+    for idx in selection:
+        if int(idx) > len(all_ingredients) or int(idx) <= 0:
+            print("Incorect selection, try again!")
+            return None
     ingredient_index = selection.split(", ")
     search_ingredients = [
         list(all_ingredients)[int(index) - 1]
@@ -138,16 +139,13 @@ def search_recipe():
         for ingredient in search_ingredients
     ]
 
-    # conditions = []
+    recipes = session.query(Recipe).filter(*conditions).all()
 
-    # for ingredient in search_ingredients:
-    #     like_term = '%' + ingredient + '%'
-    #     conditions.append(like_term)
-
-    recipes = selection.query(Recipe).filter(*conditions).all()
-
-    for recipe in recipes:
-        print(recipe.__str__)
+    if len(recipes) == 0:
+        print("----------------\n\nNo recipes found!")
+    else:
+        for recipe in recipes:
+            print(recipe.__str__)
 
 
 def update_recipe():
@@ -167,14 +165,10 @@ def update_recipe():
     except:
         print("Something went wrong, please try again.")
     else:
-        recipe_to_edit = session.query(Recipe.id.like(recipe_id_input))
-        print(
-            "---------------------\n"
-            f"1 - Name: {recipe_to_edit.name}\n"
-            f"2 - Ingredients: {recipe_to_edit.ingredients}\n"
-            f"3 - Cooking time: {recipe_to_edit.cooking_time}\n"
-            "\n"
+        recipe_to_edit = (
+            session.query(Recipe).filter(Recipe.id == recipe_id_input).one()
         )
+        print("1. Name\n2. Ingredients\n3. Cooking Time")
         edit_input = input("Enter the number of the attribute to edit: ")
         new_value = input("Enter the new value: ")
         if edit_input == "1":
@@ -185,7 +179,6 @@ def update_recipe():
             recipe_to_edit.cooking_time == new_value
         else:
             print("Invalid entry, exiting.")
-
         recipe_to_edit.difficulty = recipe_to_edit.calculate_difficulty()
         session.commit()
         print("Successfully updated recipe")
@@ -239,7 +232,6 @@ def main_menu():
         elif choice == "exit":
             session.commit()
             session.close()
-            engine.close()
         else:
             print("Invalid selection")
 
