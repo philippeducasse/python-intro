@@ -47,16 +47,12 @@ class Recipe(Base):
         ingredients_num = len(ingredients_list)
         if self.cooking_time < 10 and ingredients_num < 4:
             self.difficulty = "Easy"
-            return self.difficulty
         elif self.cooking_time < 10 and ingredients_num >= 4:
             self.difficulty = "Medium"
-            return self.difficulty
         elif self.cooking_time >= 10 and ingredients_num < 4:
             self.difficulty = "Intermediate"
-            return self.difficulty
         else:
             self.difficulty = "Hard"
-            return self.difficulty
 
     def return_ingredients_as_list(self):
         if self.ingredients == "":
@@ -97,7 +93,8 @@ def create_recipe():
             ingredient_input = input("Enter ingredients (one at a time): ")
         if ingredient_input not in ingredients:
             ingredients.append(ingredient_input)
-            ingredients_string = ", ".join(ingredients)
+
+    ingredients_string = ", ".join(ingredients)
 
     print("Successfully added ingredients to the recipe.")
 
@@ -149,11 +146,10 @@ def search_by_ingredients():
         if int(idx) > len(all_ingredients) or int(idx) <= 0:
             print("Incorect selection, try again!")
             return None
-    ingredient_index = selection.split(", ")
     try:
         search_ingredients = [
             list(all_ingredients)[int(index) - 1]
-            for index in ingredient_index
+            for index in split_selection
             if index.isdigit()
         ]
     except IndexError:
@@ -198,7 +194,6 @@ def update_recipe():
     if edit_input == "1":
         if not len(new_value) < 50 or not new_value.isalpha():
             print("Please enter a valid alphabetic value of less than 50 characters.")
-            new_value = input("Enter the new value: ")
         else:
             recipe_to_edit.name = new_value
     elif edit_input == "2":
@@ -208,7 +203,6 @@ def update_recipe():
     elif edit_input == "3":
         if not new_value.isnumeric():
             print("Please enter a valid number.")
-            new_value = input("Enter the new value: ")
         else:
             recipe_to_edit.cooking_time == new_value
             recipe_to_edit.calculate_difficulty()
